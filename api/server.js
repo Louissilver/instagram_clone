@@ -71,6 +71,9 @@ app.post('/api', function(req, res){
 
 // GET(ready)
 app.get('/api', function(req, res){
+
+    res.setHeader("Access-Control-Allow-Origin", "*");
+
     db.open(function(err, mongoclient){
         mongoclient.collection('postagens', function(err, collection){
             collection.find().toArray(function(err, results){
@@ -87,6 +90,9 @@ app.get('/api', function(req, res){
 
 // GET by ID(ready)
 app.get('/api/:id', function(req, res){
+
+    res.setHeader("Access-Control-Allow-Origin", "*");
+
     db.open(function(err, mongoclient){
         mongoclient.collection('postagens', function(err, collection){
             collection.find(objectId(req.params.id)).toArray(function(err, results){
@@ -101,8 +107,26 @@ app.get('/api/:id', function(req, res){
     });
 });
 
+app.get('/imagens/:imagem', function(req, res){
+
+    var img = req.params.imagem;
+
+    fs.readFile('./uploads/'+ img, function(err, content){
+        if(err){
+            res.status(400).json(err);
+            return;
+        }
+
+        res.writeHead(200, { 'content-type' : 'image/jpg', 'content-type' : 'image/png', 'content-type' : 'image/jpeg' });
+        res.end(content);
+    })
+});
+
 // PUT by ID(update)
 app.put('/api/:id', function(req, res){
+
+    res.setHeader("Access-Control-Allow-Origin", "*");
+
     db.open(function(err, mongoclient){
         mongoclient.collection('postagens', function(err, collection){
             collection.update(
@@ -124,6 +148,9 @@ app.put('/api/:id', function(req, res){
 
 // DELETE by ID(delete)
 app.delete('/api/:id', function(req, res){
+
+    res.setHeader("Access-Control-Allow-Origin", "*");
+
     db.open(function(err, mongoclient){
         mongoclient.collection('postagens', function(err, collection){
             collection.remove(
